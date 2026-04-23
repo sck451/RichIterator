@@ -4,7 +4,7 @@
 //
 // This file is for type-checking only. It does not need to execute and will cause errors if it does.
 
-import { RichIterator } from "../RichIterator.ts";
+import { RichIterator } from "../src/RichIterator.ts";
 import { err, none, type Option, type Result, some } from "@sck/optres";
 
 // Minimal type assertion helpers

@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { RichIterator } from "../RichIterator.ts";
+import { RichIterator } from "../src/RichIterator.ts";
 
 Deno.test("comparison: eq true", () => {
   assertEquals(

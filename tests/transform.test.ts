@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { RichIterator } from "../RichIterator.ts";
+import { RichIterator } from "../src/RichIterator.ts";
 import { none, some } from "@sck/optres";
 
 Deno.test("transform: map", () => {

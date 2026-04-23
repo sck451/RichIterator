@@ -1,5 +1,5 @@
 import { assert, assertEquals } from "@std/assert";
-import { RichIterator } from "../RichIterator.ts";
+import { RichIterator } from "../src/RichIterator.ts";
 import { err, ok } from "@sck/optres";
 
 Deno.test("consume: fold", () => {
