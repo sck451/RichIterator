@@ -1,1 +1,1 @@
-export { RichIterator } from "./RichIterator.ts";
+export { RichIterator } from "./src/RichIterator.ts";
