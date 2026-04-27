@@ -1,6 +1,6 @@
 import { assertEquals } from "@std/assert";
 import { RichIterator } from "../src/RichIterator.ts";
-import { none, some } from "@sck/optres";
+import { err, none, ok, some } from "@sck/optres";
 
 Deno.test("transform: map", () => {
   const result = RichIterator.from([1, 2, 3])
@@ -173,4 +173,18 @@ Deno.test("transform: intersperseWith", () => {
     .toArray();
 
   assertEquals(result, ["a", "sep1", "b", "sep2", "c"]);
+});
+
+Deno.test("transform: toResult ok", () => {
+  const result = RichIterator.from([ok(0), ok(1), ok(2)]).toResult();
+
+  assertEquals(result.isOk(), true);
+  assertEquals(result.unwrap(), [0, 1, 2]);
+});
+
+Deno.test("transform: toResult err", () => {
+  const result = RichIterator.from([ok(0), err("1"), ok(2)]).toResult();
+
+  assertEquals(result.isErr(), true);
+  assertEquals(result.unwrapErr(), "1");
 });

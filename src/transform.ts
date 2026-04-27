@@ -1,5 +1,5 @@
 import { RichIterator } from "./RichIterator.ts";
-import { type Option } from "@sck/optres";
+import { err, ok, type Option, type Result } from "@sck/optres";
 import { asIterable, toIterator } from "./utilities.ts";
 
 export function map<T, U>(
@@ -328,4 +328,20 @@ export function inspect<T>(
       }
     }(),
   );
+}
+
+export function toResult<T, E>(
+  iterator: RichIterator<Result<T, E>>,
+): Result<T[], E> {
+  const collection: T[] = [];
+
+  for (const value of asIterable(iterator)) {
+    if (value.isOk()) {
+      collection.push(value.unwrap());
+    } else {
+      return err(value.unwrapErr());
+    }
+  }
+
+  return ok(collection);
 }

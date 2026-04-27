@@ -5,7 +5,7 @@
 // This file is for type-checking only. It does not need to execute and will cause errors if it does.
 
 import { RichIterator } from "../src/RichIterator.ts";
-import { err, none, type Option, type Result, some } from "@sck/optres";
+import { err, none, ok, type Option, type Result, some } from "@sck/optres";
 
 // Minimal type assertion helpers
 function expectType<T>(_value: T): void {}
@@ -63,6 +63,28 @@ function expectAssignable<T>(_value: T): void {}
 
   // @ts-expect-error flatten is only valid for iterators of iterables/iterators
   RichIterator.from([1, 2, 3]).flatten();
+}
+
+// toResult
+{
+  const okArr = RichIterator.from([ok(1), ok(2), ok(3)]).toResult();
+  expectType<Result<number[], never>>(okArr);
+
+  const mixedArr = RichIterator.from([ok(1), err("2"), ok(3)]).toResult();
+  expectType<Result<number[], string>>(mixedArr);
+
+  const errArr = RichIterator.from([err("1"), err("2"), err("3")]).toResult();
+  expectType<Result<never[], string>>(errArr);
+
+  const typedArr = RichIterator.from<Result<number, string>>([
+    ok(1),
+    ok(2),
+    ok(3),
+  ]).toResult();
+  expectType<Result<number[], string>>(typedArr);
+
+  // @ts-expect-error toResult is only value for iterators of Results
+  RichIterator.from([1, 2, 3]).toResult();
 }
 
 // mapWhile / filterMap / findMap

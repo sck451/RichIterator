@@ -129,6 +129,10 @@ export class RichIterator<T, TReturn = unknown> {
     return transform.inspect(this, inspector);
   }
 
+  public toResult<U, E>(this: RichIterator<Result<U, E>>): Result<U[], E> {
+    return transform.toResult(this);
+  }
+
   public chunks(size: number): RichIterator<T[], T[]> {
     return transform.chunks(this, size);
   }
