@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals, assertThrows } from "@std/assert";
 import { RichIterator } from "../src/RichIterator.ts";
 import { err, none, ok, some } from "@sck/optres";
 
@@ -32,6 +32,17 @@ Deno.test("transform: take (leftover)", () => {
   assertEquals(iterator.toArray(), [3, 4]);
 });
 
+Deno.test("transform: take to exhaustion", () => {
+  const iterator = RichIterator.from([1, 2, 3]);
+  const result = iterator.take(5).toArray();
+  assertEquals(result, [1, 2, 3]);
+});
+
+Deno.test("transform: take invalid parameter", () => {
+  assertThrows(() => RichIterator.from([1, 2, 3]).take(-1));
+  assertThrows(() => RichIterator.from([1, 2, 3]).take(0.5));
+});
+
 Deno.test("transform: drop", () => {
   const result = RichIterator.from([1, 2, 3, 4])
     .drop(2)
@@ -40,12 +51,27 @@ Deno.test("transform: drop", () => {
   assertEquals(result, [3, 4]);
 });
 
+Deno.test("transform: drop to exhaustion", () => {
+  const result = RichIterator.from([1, 2, 3]).drop(4).toArray();
+  assertEquals(result, []);
+});
+
+Deno.test("transform: drop invalid parameter", () => {
+  assertThrows(() => RichIterator.from([1, 2, 3]).drop(-1));
+  assertThrows(() => RichIterator.from([1, 2, 3]).drop(0.5));
+});
+
 Deno.test("transform: dropWhile", () => {
   const result = RichIterator.from([1, 2, 3, 0, 4])
     .dropWhile((x) => x < 3)
     .toArray();
 
   assertEquals(result, [3, 0, 4]);
+});
+
+Deno.test("transform: dropWhile to exhaustion", () => {
+  const result = RichIterator.from([1, 2, 3]).dropWhile((x) => x < 4).toArray();
+  assertEquals(result, []);
 });
 
 Deno.test("transform: takeWhile", () => {
@@ -93,6 +119,10 @@ Deno.test("transform: chunks returns full chunks and remainder as return value",
   const final = it.next();
   assertEquals(final.done, true);
   assertEquals(final.value, [5]);
+
+  assertThrows(() => RichIterator.from([1, 2, 3]).chunks(0));
+  assertThrows(() => RichIterator.from([1, 2, 3]).chunks(-1));
+  assertThrows(() => RichIterator.from([1, 2, 3]).chunks(0.5));
 });
 
 Deno.test("transform: chain", () => {
@@ -125,6 +155,15 @@ Deno.test("transform: mapWhile stops on first none", () => {
   assertEquals(result, [1, 2]);
 });
 
+Deno.test("transform: mapWhile to exhaustion", () => {
+  const result = RichIterator.from(["1", "2", "3"]).mapWhile((s) => {
+    const n = Number(s);
+    return Number.isNaN(n) ? none() : some(n);
+  }).toArray();
+
+  assertEquals(result, [1, 2, 3]);
+});
+
 Deno.test("transform: zip", () => {
   const result = RichIterator.from([1, 2, 3])
     .zip(["a", "b"])
@@ -133,12 +172,28 @@ Deno.test("transform: zip", () => {
   assertEquals(result, [[1, "a"], [2, "b"]]);
 });
 
+Deno.test("transform: zip (first exhausted)", () => {
+  const result = RichIterator.from(["a", "b"])
+    .zip([1, 2, 3])
+    .toArray();
+
+  assertEquals(result, [["a", 1], ["b", 2]]);
+});
+
 Deno.test("transform: zipWith", () => {
   const result = RichIterator.from([1, 2, 3])
     .zipWith(["a", "b"], (n, s) => `${n}:${s}`)
     .toArray();
 
   assertEquals(result, ["1:a", "2:b"]);
+});
+
+Deno.test("transform: zipWith (first exhausted)", () => {
+  const result = RichIterator.from(["a", "b"])
+    .zipWith([1, 2, 3], (n, s) => `${n}:${s}`)
+    .toArray();
+
+  assertEquals(result, ["a:1", "b:2"]);
 });
 
 Deno.test("transform: intersperse", () => {
@@ -221,4 +276,10 @@ Deno.test("transform: tryMap failure", () => {
 
   assert(result.isErr());
   assertEquals(result.unwrapErr(), "two");
+});
+
+Deno.test("transform: enumerate", () => {
+  const result = RichIterator.from(["a", "b", "c", "d"]).enumerate().toArray();
+
+  assertEquals(result, [[0, "a"], [1, "b"], [2, "c"], [3, "d"]]);
 });

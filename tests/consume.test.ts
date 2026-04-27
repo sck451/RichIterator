@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals, assertThrows } from "@std/assert";
 import { RichIterator } from "../src/RichIterator.ts";
 import { err, ok } from "@sck/optres";
 
@@ -66,6 +66,14 @@ Deno.test("consume: tryReduce failure", () => {
   assertEquals(inner.unwrapErr(), "zero");
 });
 
+Deno.test("consume: tryReduce empty", () => {
+  const result = RichIterator.from<number>([]).tryReduce((accumulator, value) =>
+    ok(accumulator + value)
+  );
+
+  assert(result.isNone());
+});
+
 Deno.test("consume: forEach", () => {
   const seen: number[] = [];
 
@@ -121,6 +129,12 @@ Deno.test("consume: advanceBy failure returns remaining count", () => {
   assertEquals(result.unwrapErr(), 2);
 });
 
+Deno.test("consume: advanceBy invalid parameter", () => {
+  const iterator = RichIterator.from([1, 2, 3]);
+  assertThrows(() => iterator.advanceBy(-1));
+  assertThrows(() => iterator.advanceBy(0.5));
+});
+
 Deno.test("consume: nextChunk full chunk", () => {
   const it = RichIterator.from([1, 2, 3, 4]);
 
@@ -138,6 +152,12 @@ Deno.test("consume: nextChunk partial chunk on exhaustion", () => {
 
   assert(!result.isOk());
   assertEquals(result.unwrapErr(), [3]);
+});
+
+Deno.test("consume: nextChunk error on invalid paramter", () => {
+  const iterator = RichIterator.from([1, 2, 3]);
+  assertThrows(() => iterator.nextChunk(0));
+  assertThrows(() => iterator.nextChunk(0.5));
 });
 
 Deno.test("consume: count", () => {

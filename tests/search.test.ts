@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals, assertThrows } from "@std/assert";
 import { RichIterator } from "../src/RichIterator.ts";
 import { none, some } from "@sck/optres";
 
@@ -24,11 +24,17 @@ Deno.test("search: every", () => {
   );
 });
 
-Deno.test("search: find", () => {
+Deno.test("search: find success", () => {
   const result = RichIterator.from([1, 3, 4, 6]).find((x) => x % 2 === 0);
 
   assert(result.isSome());
   assertEquals(result.unwrap(), 4);
+});
+
+Deno.test("search: find failure", () => {
+  const result = RichIterator.from([1, 2, 3]).find((val) => val === 4);
+
+  assert(result.isNone());
 });
 
 Deno.test("search: findMap", () => {
@@ -57,6 +63,12 @@ Deno.test("search: position", () => {
   assertEquals(result.unwrap(), 2);
 });
 
+Deno.test("search: position failure", () => {
+  const result = RichIterator.from([1, 2, 3]).position((val) => val === 4);
+
+  assert(result.isNone());
+});
+
 Deno.test("search: last", () => {
   const result = RichIterator.from([1, 2, 3]).last();
 
@@ -79,6 +91,11 @@ Deno.test("search: nth", () => {
 Deno.test("search: nth out of range", () => {
   const result = RichIterator.from([5, 6]).nth(5);
   assert(result.isNone());
+});
+
+Deno.test("search nth invalid parameter", () => {
+  assertThrows(() => RichIterator.from([1, 2, 3]).nth(-1));
+  assertThrows(() => RichIterator.from([1, 2, 3]).nth(0.5));
 });
 
 Deno.test("search: partition", () => {
