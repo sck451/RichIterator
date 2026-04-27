@@ -117,3 +117,22 @@ Deno.test("core: toStringTag", () => {
     "[object RichIterator]",
   );
 });
+
+Deno.test("core: dispose", () => {
+  let called = false;
+
+  {
+    using iterator = RichIterator.from<number>({
+      next() {
+        return { done: false, value: 0 };
+      },
+      return() {
+        called = true;
+        return { done: true, value: undefined };
+      },
+    });
+    iterator.next();
+  }
+
+  assert(called);
+});

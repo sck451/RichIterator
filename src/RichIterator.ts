@@ -1,6 +1,6 @@
 import { type Option, type Result } from "@sck/optres";
 import * as comparison from "./comparison.ts";
-import { asIterable, isDisposable, toIterator } from "./utilities.ts";
+import { asIterable, toIterator } from "./utilities.ts";
 import * as transform from "./transform.ts";
 import * as consume from "./consume.ts";
 import * as search from "./search.ts";
@@ -56,8 +56,8 @@ export class RichIterator<T, TReturn = unknown> {
   }
 
   public [Symbol.dispose](): void {
-    if (isDisposable(this.source)) {
-      this.source[Symbol.dispose]();
+    if (typeof this.source.return === "function") {
+      this.source.return();
     }
   }
   public asNative(): IteratorObject<T> {

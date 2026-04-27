@@ -32,9 +32,3 @@ export function asIterable<T>(iterator: RichIterator<T>): Iterable<T> {
 export type Disposable = {
   [Symbol.dispose]: () => void;
 };
-
-export function isDisposable(test: unknown): test is Disposable {
-  return (typeof test === "object") && (test !== null) &&
-    (typeof (test as { [Symbol.dispose]?: unknown })[Symbol.dispose] ===
-      "function");
-}
