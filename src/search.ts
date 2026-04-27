@@ -72,7 +72,9 @@ export function nth<T>(iterator: RichIterator<T>, position: number): Option<T> {
     throw new RangeError();
   }
 
-  for (let i = 0; true; i++) {
+  let i = 0;
+
+  while (true) {
     const { done, value } = iterator.next();
 
     if (done) {
@@ -82,6 +84,8 @@ export function nth<T>(iterator: RichIterator<T>, position: number): Option<T> {
     if (i === position) {
       return some(value);
     }
+
+    i++;
   }
 }
 

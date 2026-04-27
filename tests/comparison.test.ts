@@ -80,6 +80,18 @@ Deno.test("comparison: lt le gt ge", () => {
   assert(greater2.ge([1, 3], (a, b) => a - b));
 });
 
+Deno.test("comparison: lt le gt ge no comparator", () => {
+  const less = RichIterator.from([1, 2]);
+  const equal = RichIterator.from([1, 2]);
+  const greater = RichIterator.from([1, 3]);
+  const greater2 = RichIterator.from([1, 3]);
+
+  assert(less.lt([1, 3]));
+  assert(equal.le([1, 2]));
+  assert(greater.gt([1, 2]));
+  assert(greater2.ge([1, 3]));
+});
+
 Deno.test("comparison: max", () => {
   const result = RichIterator.from([3, 1, 5, 2]).max((a, b) => a - b);
 
