@@ -87,6 +87,21 @@ function expectAssignable<T>(_value: T): void {}
   RichIterator.from([1, 2, 3]).toResult();
 }
 
+// toOption
+{
+  const someArr = RichIterator.from([some(1), some(2), some(3)]).toOption();
+  expectType<Option<number[]>>(someArr);
+
+  const mixedArr = RichIterator.from([some(1), none(), some(2)]).toOption();
+  expectType<Option<number[]>>(mixedArr);
+
+  const noneArr = RichIterator.from([none(), none(), none()]).toOption();
+  expectType<Option<never[]>>(noneArr);
+
+  // @ts-expect-error toOption is only valid for iterators of Options
+  RichIterator.from([1, 2, 3]).toOption();
+}
+
 // mapWhile / filterMap / findMap
 {
   const mapped = RichIterator.from(["1", "x", "2"]).filterMap((

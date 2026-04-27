@@ -1,4 +1,4 @@
-import { assertEquals } from "@std/assert";
+import { assert, assertEquals } from "@std/assert";
 import { RichIterator } from "../src/RichIterator.ts";
 import { err, none, ok, some } from "@sck/optres";
 
@@ -187,4 +187,17 @@ Deno.test("transform: toResult err", () => {
 
   assertEquals(result.isErr(), true);
   assertEquals(result.unwrapErr(), "1");
+});
+
+Deno.test("transform: toOption some", () => {
+  const result = RichIterator.from([some(0), some(1), some(2)]).toOption();
+
+  assert(result.isSome());
+  assertEquals(result.unwrap(), [0, 1, 2]);
+});
+
+Deno.test("transform: toOption none", () => {
+  const result = RichIterator.from([some(0), none(), some(2)]).toOption();
+
+  assert(result.isNone());
 });

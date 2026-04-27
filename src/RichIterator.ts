@@ -133,6 +133,10 @@ export class RichIterator<T, TReturn = unknown> {
     return transform.toResult(this);
   }
 
+  public toOption<U>(this: RichIterator<Option<U>>): Option<U[]> {
+    return transform.toOption(this);
+  }
+
   public chunks(size: number): RichIterator<T[], T[]> {
     return transform.chunks(this, size);
   }
