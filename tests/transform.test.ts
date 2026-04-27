@@ -183,7 +183,8 @@ Deno.test("transform: toResult ok", () => {
 });
 
 Deno.test("transform: toResult err", () => {
-  const result = RichIterator.from([ok(0), err("1"), ok(2)]).toResult();
+  const result = RichIterator.from([ok(0), err("1"), ok(2), err("3")])
+    .toResult();
 
   assertEquals(result.isErr(), true);
   assertEquals(result.unwrapErr(), "1");

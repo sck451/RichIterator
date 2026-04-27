@@ -83,7 +83,7 @@ function expectAssignable<T>(_value: T): void {}
   ]).toResult();
   expectType<Result<number[], string>>(typedArr);
 
-  // @ts-expect-error toResult is only value for iterators of Results
+  // @ts-expect-error toResult is only valid for iterators of Results
   RichIterator.from([1, 2, 3]).toResult();
 }
 
