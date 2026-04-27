@@ -3,7 +3,7 @@
     "dev": "deno run --watch main.ts"
   },
   "imports": {
-    "@sck/optres": "jsr:@sck/optres@^0.1.4",
+    "@sck/optres": "jsr:@sck/optres@^0.1.5",
     "@std/assert": "jsr:@std/assert@^1.0.19"
   }
 }
