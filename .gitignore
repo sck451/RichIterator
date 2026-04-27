@@ -1,0 +1,13 @@
+# Deno
+deno.lock
+
+# Docs and Coverage
+/docs
+/coverage
+
+# Build outputs
+dist/
+build/
+
+# IDE
+.vscode/
