@@ -1,7 +1,6 @@
 import { RichIterator } from "./RichIterator.ts";
 import { err, none, ok, type Option, type Result, some } from "@sck/optres";
 import { asIterable, toIterator } from "./utilities.ts";
-import { it } from "node:test";
 
 export function map<T, U>(
   iterator: RichIterator<T>,
