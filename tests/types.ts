@@ -102,6 +102,20 @@ function expectAssignable<T>(_value: T): void {}
   RichIterator.from([1, 2, 3]).toOption();
 }
 
+// tryMap
+{
+  const successArr = RichIterator.from([1, 2, 3]).tryMap((val) => ok(val));
+  expectType<Result<number[], never>>(successArr);
+
+  const mixedArr = RichIterator.from([1, 2, 3]).tryMap((val) =>
+    val === 2 ? err("two") : ok(val)
+  );
+  expectType<Result<number[], string>>(mixedArr);
+
+  const errArr = RichIterator.from([1, 2, 3]).tryMap((val) => err(`${val}`));
+  expectType<Result<never[], string>>(errArr);
+}
+
 // mapWhile / filterMap / findMap
 {
   const mapped = RichIterator.from(["1", "x", "2"]).filterMap((

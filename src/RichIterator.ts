@@ -79,6 +79,10 @@ export class RichIterator<T, TReturn = unknown> {
     return transform.map(this, mapper);
   }
 
+  public tryMap<U, E>(mapper: (value: T) => Result<U, E>): Result<U[], E> {
+    return transform.tryMap(this, mapper);
+  }
+
   public mapWhile<U>(mapper: (value: T) => Option<U>): RichIterator<U> {
     return transform.mapWhile(this, mapper);
   }

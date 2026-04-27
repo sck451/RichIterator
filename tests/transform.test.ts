@@ -202,3 +202,23 @@ Deno.test("transform: toOption none", () => {
 
   assert(result.isNone());
 });
+
+Deno.test("transform: tryMap success", () => {
+  const result = RichIterator.from([0, 1, 2, 3]).tryMap((val) => ok(val));
+
+  assert(result.isOk());
+  assertEquals(result.unwrap(), [0, 1, 2, 3]);
+});
+
+Deno.test("transform: tryMap failure", () => {
+  const result = RichIterator.from([0, 1, 2, 3]).tryMap((val) => {
+    if (val === 2) {
+      return err("two");
+    } else {
+      return ok(val);
+    }
+  });
+
+  assert(result.isErr());
+  assertEquals(result.unwrapErr(), "two");
+});

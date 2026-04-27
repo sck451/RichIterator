@@ -17,6 +17,23 @@ export function map<T, U>(
   );
 }
 
+export function tryMap<T, E, U>(
+  iterator: RichIterator<T>,
+  mapper: (value: T) => Result<U, E>,
+): Result<U[], E> {
+  return iterator.tryFold<U[], E>(
+    [],
+    (accumulator, value) =>
+      mapper(value).match<Result<U[], E>>({
+        Ok: (value) => {
+          accumulator.push(value);
+          return ok(accumulator);
+        },
+        Err: (error) => err(error),
+      }),
+  );
+}
+
 export function filter<T, S extends T>(
   iterator: RichIterator<T>,
   predicate: (value: T, index: number) => value is S,
@@ -333,25 +350,11 @@ export function inspect<T>(
 export function toResult<T, E>(
   iterator: RichIterator<Result<T, E>>,
 ): Result<T[], E> {
-  return iterator.tryFold<T[], E>(
-    [],
-    (accumulator, value) =>
-      value.match<Result<T[], E>>({
-        Ok: (val) => ok([...accumulator, val]),
-        Err: (error) => err(error),
-      }),
-  );
+  return iterator.tryMap((val) => val);
 }
 
 export function toOption<T>(
   iterator: RichIterator<Option<T>>,
 ): Option<T[]> {
-  return iterator.tryFold<T[], undefined>(
-    [],
-    (accumulator, value) =>
-      value.match<Result<T[], undefined>>({
-        Some: (val) => ok([...accumulator, val]),
-        None: () => err(undefined),
-      }),
-  ).ok();
+  return iterator.tryMap((val) => val.okOr(undefined)).ok();
 }
