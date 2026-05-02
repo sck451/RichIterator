@@ -14,20 +14,20 @@ function toNumber(n: unknown): Result<number, TypeError> {
 export function product<T>(
   iterator: RichIterator<T>,
 ): Result<number, TypeError> {
-  return iterator.tryFold(1, (acc, entry) => {
-    return toNumber(entry).map(val => acc * val);
-  });
+  return iterator.tryFold(
+    1,
+    (acc, entry) => toNumber(entry).map((val) => acc * val),
+  );
 }
 
 export function sum<T>(iterator: RichIterator<T>): Result<number, TypeError> {
-  return iterator.tryFold(0, (acc, entry) => {
-    return toNumber(entry).map(val => acc + val);
-  });
+  return iterator.tryFold(
+    0,
+    (acc, entry) => toNumber(entry).map((val) => acc + val),
+  );
 }
 
-export function productUnchecked<T>(
-  iterator: RichIterator<T>
-): number {
+export function productUnchecked<T>(iterator: RichIterator<T>): number {
   return iterator.fold(1, (acc, val) => acc * Number(val));
 }
 
