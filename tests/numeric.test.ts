@@ -12,7 +12,7 @@ Deno.test("numeric: sum failure", () => {
   const result = RichIterator.from([1, "x", 3]).sum();
 
   assert(!result.isOk());
-  assertEquals(result.unwrapErr() instanceof TypeError, true);
+  assert(result.unwrapErr() instanceof TypeError);
 });
 
 Deno.test("numeric: product success", () => {
@@ -26,5 +26,21 @@ Deno.test("numeric: product failure", () => {
   const result = RichIterator.from([2, "x", 4]).product();
 
   assert(!result.isOk());
-  assertEquals(result.unwrapErr() instanceof TypeError, true);
+  assert(result.unwrapErr() instanceof TypeError);
+});
+
+Deno.test("numeric: sumUnchecked", () => {
+  const successResult = RichIterator.from([1, "2", 3]).sumUnchecked();
+  const failResult = RichIterator.from([2, "x", 4]).sumUnchecked();
+
+  assertEquals(successResult, 6);
+  assertEquals(failResult, NaN);
+});
+
+Deno.test("numeric: productUnchecked", () => {
+  const successResult = RichIterator.from([1, "2", 3]).productUnchecked();
+  const failResult = RichIterator.from([2, "x", 4]).productUnchecked();
+
+  assertEquals(successResult, 6);
+  assertEquals(failResult, NaN);
 });

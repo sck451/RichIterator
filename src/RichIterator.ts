@@ -332,4 +332,12 @@ export class RichIterator<T, TReturn = unknown> {
   public sum(): Result<number, TypeError> {
     return numeric.sum(this);
   }
+
+  public productUnchecked(): number {
+    return numeric.productUnchecked(this);
+  }
+
+  public sumUnchecked(): number {
+    return numeric.sumUnchecked(this);
+  }
 }
