@@ -1,5 +1,5 @@
-import { none, Option, some } from "@sck/optres";
-import { RichIterator } from "../src/RichIterator.ts";
+import { none, type Option, some } from "@sck/optres";
+import type { RichIterator } from "../src/RichIterator.ts";
 import { asIterable, toIterator } from "../src/utilities.ts";
 
 export type Order = "less" | "equal" | "greater";

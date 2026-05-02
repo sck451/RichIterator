@@ -1,4 +1,4 @@
-import {  RichIterator } from "./RichIterator.ts";
+import type { RichIterator } from "./RichIterator.ts";
 import { err, ok, type Result } from "@sck/optres";
 
 function toNumber(n: unknown): Result<number, TypeError> {

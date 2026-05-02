@@ -1,4 +1,4 @@
-import { type Option, type Result } from "@sck/optres";
+import type { Option, Result } from "@sck/optres";
 import * as comparison from "./comparison.ts";
 import { asIterable, toIterator } from "./utilities.ts";
 import * as transform from "./transform.ts";

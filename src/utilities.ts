@@ -1,4 +1,4 @@
-import { RichIterator } from "./RichIterator.ts";
+import type { RichIterator } from "./RichIterator.ts";
 
 export function toIterator<T, TReturn = undefined>(
   source: Iterator<T> | Iterable<T>,

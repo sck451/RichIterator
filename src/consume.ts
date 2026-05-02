@@ -1,4 +1,4 @@
-import { RichIterator } from "./RichIterator.ts";
+import type { RichIterator } from "./RichIterator.ts";
 import { err, none, ok, type Option, type Result, some } from "@sck/optres";
 import { asIterable } from "./utilities.ts";
 
