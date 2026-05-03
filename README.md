@@ -58,7 +58,7 @@ This library uses `@sck/optres` to provide `Option` and `Result` types
 - `Result<T, E>`, representing success or failure. Indicated by `ok(value)` and
   `err(error)`
 
-See [`@sck/optres](https://jsr.io/@sck/optres) for more details.
+See [`@sck/optres`](https://jsr.io/@sck/optres) for more details.
 
 Example:
 

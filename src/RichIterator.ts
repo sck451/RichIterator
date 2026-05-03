@@ -61,7 +61,7 @@ export class RichIterator<T, TReturn = unknown> {
     return this;
   }
 
-  get [Symbol.toStringTag]() {
+  get [Symbol.toStringTag](): string {
     return "RichIterator";
   }
 
