@@ -1,5 +1,5 @@
 import type { RichIterator } from "./RichIterator.ts";
-import { err, none, ok, type Option, type Result, some } from "@sck/optres";
+import { err, ok, type Option, type Result } from "@sck/optres";
 import { asIterable } from "./utilities.ts";
 
 export function fold<T, U>(
@@ -22,10 +22,10 @@ export function tryFold<T, U, E>(
   reducer: (accumulator: U, value: T) => Result<U, E>,
 ): Result<U, E> {
   let accumulator = initialValue;
-  let result = iterator.next();
+  let result = iterator.nextOption();
 
-  while (!result.done) {
-    const reducerResult = reducer(accumulator, result.value);
+  while (result.isSome()) {
+    const reducerResult = reducer(accumulator, result.unwrap());
 
     if (reducerResult.isOk()) {
       accumulator = reducerResult.unwrap();
@@ -33,7 +33,7 @@ export function tryFold<T, U, E>(
       return reducerResult;
     }
 
-    result = iterator.next();
+    result = iterator.nextOption();
   }
 
   return ok(accumulator);
@@ -43,45 +43,36 @@ export function reduce<T>(
   iterator: RichIterator<T>,
   reducer: (accumulator: T, value: T) => T,
 ): Option<T> {
-  const first = iterator.next();
+  return iterator.nextOption().map((firstValue) => {
+    let accumulator = firstValue;
 
-  if (first.done) {
-    return none();
-  }
+    for (const value of asIterable(iterator)) {
+      accumulator = reducer(accumulator, value);
+    }
 
-  let accumulator = first.value;
-
-  for (const value of asIterable(iterator)) {
-    accumulator = reducer(accumulator, value);
-  }
-
-  return some(accumulator);
+    return accumulator;
+  });
 }
 
 export function tryReduce<T, E>(
   iterator: RichIterator<T>,
   reducer: (accumulator: T, value: T) => Result<T, E>,
 ): Option<Result<T, E>> {
-  const first = iterator.next();
+  return iterator.nextOption().map((firstValue) => {
+    let accumulator = firstValue;
 
-  if (first.done) {
-    return none();
-  }
+    for (const value of asIterable(iterator)) {
+      const result = reducer(accumulator, value);
 
-  let accumulator = first.value;
+      if (!result.isOk()) {
+        return result;
+      }
 
-  for (const value of asIterable(iterator)) {
-    const result = reducer(accumulator, value);
-
-    if (result.isOk()) {
       accumulator = result.unwrap();
-      continue;
     }
 
-    return some(result);
-  }
-
-  return some(ok(accumulator));
+    return ok(accumulator);
+  });
 }
 
 export function forEach<T>(
@@ -119,9 +110,7 @@ export function advanceBy<T>(
   let remaining = limit;
 
   while (remaining > 0) {
-    const { done } = iterator.next();
-
-    if (done) {
+    if (iterator.nextOption().isNone()) {
       return err(remaining);
     }
     remaining--;
@@ -141,13 +130,13 @@ export function nextChunk<T>(
   const chunk: T[] = [];
 
   while (chunk.length < size) {
-    const result = iterator.next();
+    const result = iterator.nextOption();
 
-    if (result.done) {
+    if (result.isNone()) {
       return err(chunk);
     }
 
-    chunk.push(result.value);
+    chunk.push(result.unwrap());
   }
 
   return ok(chunk);

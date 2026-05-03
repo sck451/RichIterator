@@ -52,41 +52,17 @@ export function position<T>(
 }
 
 export function last<T>(iterator: RichIterator<T>): Option<T> {
-  const first = iterator.next();
-
-  if (first.done) {
-    return none();
-  }
-
-  let latest = first.value;
-
-  for (const value of asIterable(iterator)) {
-    latest = value;
-  }
-
-  return some(latest);
+  return iterator.reduce((_, value) => value);
 }
 
-export function nth<T>(iterator: RichIterator<T>, position: number): Option<T> {
-  if (!Number.isInteger(position) || position < 0) {
-    throw new RangeError();
-  }
-
-  let i = 0;
-
-  while (true) {
-    const { done, value } = iterator.next();
-
-    if (done) {
-      return none();
-    }
-
-    if (i === position) {
-      return some(value);
-    }
-
-    i++;
-  }
+export function nth<T>(
+  iterator: RichIterator<T>,
+  position: number,
+): Option<T> {
+  return iterator.advanceBy(position).match({
+    Ok: () => iterator.nextOption(),
+    Err: () => none(),
+  });
 }
 
 export function partition<T, S extends T>(

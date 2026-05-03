@@ -1,6 +1,5 @@
-import { none, type Option, some } from "@sck/optres";
-import type { RichIterator } from "../src/RichIterator.ts";
-import { asIterable, toIterator } from "../src/utilities.ts";
+import type { Option } from "@sck/optres";
+import { RichIterator } from "../src/RichIterator.ts";
 
 export type Order = "less" | "equal" | "greater";
 
@@ -16,30 +15,30 @@ export function getDefaultComparator<T>(): Comparator<T> {
 
 export function cmp<T>(
   thisIterator: RichIterator<T>,
-  otherIterator: RichIterator<T> | Iterator<T> | Iterable<T>,
+  comparisonIterator: RichIterator<T> | Iterator<T> | Iterable<T>,
   comparator?: Comparator<T>,
 ): Order {
-  otherIterator = toIterator(otherIterator);
+  const otherIterator = RichIterator.from(comparisonIterator);
 
   const comparisonFn = comparator ?? getDefaultComparator();
 
   while (true) {
-    const thisResult = thisIterator.next();
-    const otherResult = otherIterator.next();
+    const thisResult = thisIterator.nextOption();
+    const otherResult = otherIterator.nextOption();
 
-    if (thisResult.done && otherResult.done) {
+    if (thisResult.isNone() && otherResult.isNone()) {
       return "equal";
     }
 
-    if (thisResult.done) {
+    if (thisResult.isNone()) {
       return "less";
     }
 
-    if (otherResult.done) {
+    if (otherResult.isNone()) {
       return "greater";
     }
 
-    const order = comparisonFn(thisResult.value, otherResult.value);
+    const order = comparisonFn(thisResult.unwrap(), otherResult.unwrap());
     if (order < 0) {
       return "less";
     }
@@ -51,28 +50,20 @@ export function cmp<T>(
 
 export function eqBy<T, U>(
   thisIterator: RichIterator<T>,
-  otherIterator: Iterator<U> | Iterable<U> | RichIterator<U>,
+  comparisonIterator: Iterator<U> | Iterable<U> | RichIterator<U>,
   comparison: (left: T, right: U) => boolean,
 ): boolean {
-  otherIterator = toIterator(otherIterator);
+  const otherIterator = RichIterator.from(comparisonIterator);
 
   while (true) {
-    const thisResult = thisIterator.next();
-    const otherResult = otherIterator.next();
+    const thisResult = thisIterator.nextOption();
+    const otherResult = otherIterator.nextOption();
 
-    if (thisResult.done) {
-      if (otherResult.done) {
-        return true;
-      }
-
-      return false;
+    if (thisResult.isNone() || otherResult.isNone()) {
+      return thisResult.isNone() === otherResult.isNone();
     }
 
-    if (otherResult.done) {
-      return false;
-    }
-
-    if (!comparison(thisResult.value, otherResult.value)) {
+    if (!comparison(thisResult.unwrap(), otherResult.unwrap())) {
       return false;
     }
   }
@@ -83,10 +74,7 @@ export function lt<T>(
   other: Iterator<T> | Iterable<T>,
   comparator?: Comparator<T>,
 ): boolean {
-  const result = comparator === undefined
-    ? cmp(thisIterator, other)
-    : cmp(thisIterator, other, comparator);
-  return result === "less";
+  return cmp(thisIterator, other, comparator) === "less";
 }
 
 export function le<T>(
@@ -94,10 +82,7 @@ export function le<T>(
   other: Iterator<T> | Iterable<T>,
   comparator?: Comparator<T>,
 ): boolean {
-  const result = comparator === undefined
-    ? cmp(thisIterator, other)
-    : cmp(thisIterator, other, comparator);
-  return result !== "greater";
+  return cmp(thisIterator, other, comparator) !== "greater";
 }
 
 export function gt<T>(
@@ -105,10 +90,7 @@ export function gt<T>(
   other: Iterator<T> | Iterable<T>,
   comparator?: Comparator<T>,
 ): boolean {
-  const result = comparator === undefined
-    ? cmp(thisIterator, other)
-    : cmp(thisIterator, other, comparator);
-  return result === "greater";
+  return cmp(thisIterator, other, comparator) === "greater";
 }
 
 export function ge<T>(
@@ -116,50 +98,23 @@ export function ge<T>(
   other: Iterator<T> | Iterable<T>,
   comparator?: Comparator<T>,
 ): boolean {
-  const result = comparator === undefined
-    ? cmp(thisIterator, other)
-    : cmp(thisIterator, other, comparator);
-  return result !== "less";
+  return cmp(thisIterator, other, comparator) !== "less";
 }
 
 export function max<T>(
   iterator: RichIterator<T>,
   comparison: Comparator<T>,
 ): Option<T> {
-  const first = iterator.next();
-
-  if (first.done) {
-    return none();
-  }
-
-  let maximum = first.value;
-
-  for (const value of asIterable(iterator)) {
-    if (comparison(value, maximum) > 0) {
-      maximum = value;
-    }
-  }
-
-  return some(maximum);
+  return iterator.reduce((currentMaximum, value) =>
+    comparison(value, currentMaximum) > 0 ? value : currentMaximum
+  );
 }
 
 export function min<T>(
   iterator: RichIterator<T>,
   comparison: Comparator<T>,
 ): Option<T> {
-  const first = iterator.next();
-
-  if (first.done) {
-    return none();
-  }
-
-  let minimum = first.value;
-
-  for (const value of asIterable(iterator)) {
-    if (comparison(value, minimum) < 0) {
-      minimum = value;
-    }
-  }
-
-  return some(minimum);
+  return iterator.reduce((currentMinimum, value) =>
+    comparison(value, currentMinimum) < 0 ? value : currentMinimum
+  );
 }

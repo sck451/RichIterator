@@ -1,5 +1,5 @@
 import { RichIterator } from "./RichIterator.ts";
-import { err, ok, type Option, type Result } from "@sck/optres";
+import type { Option, Result } from "@sck/optres";
 import { asIterable, toIterator } from "./utilities.ts";
 
 export function map<T, U>(
@@ -24,12 +24,9 @@ export function tryMap<T, E, U>(
   return iterator.tryFold<U[], E>(
     [],
     (accumulator, value) =>
-      mapper(value).match<Result<U[], E>>({
-        Ok: (value) => {
-          accumulator.push(value);
-          return ok(accumulator);
-        },
-        Err: (error) => err(error),
+      mapper(value).map((mapped) => {
+        accumulator.push(mapped);
+        return accumulator;
       }),
   );
 }
@@ -300,37 +297,13 @@ export function zipWith<T, U, R>(
   other: Iterable<U> | Iterator<U>,
   zipper: (left: T, right: U) => R,
 ): RichIterator<R> {
-  const otherIterator = toIterator(other);
-
-  return new RichIterator(
-    function* zipWithIterator(): Generator<R, undefined, unknown> {
-      while (true) {
-        const thisResult = thisIterator.next();
-        if (thisResult.done) {
-          return;
-        }
-
-        const otherResult = otherIterator.next();
-        if (otherResult.done) {
-          return;
-        }
-
-        yield zipper(thisResult.value, otherResult.value);
-      }
-    }(),
-  );
+  return zip(thisIterator, other).map(([left, right]) => zipper(left, right));
 }
 
 export function flatten<T>(
   thisIterator: RichIterator<Iterator<T> | Iterable<T>>,
 ): RichIterator<T> {
-  return new RichIterator(
-    function* flattenGenerator(): Generator<T, undefined, unknown> {
-      for (const inner of asIterable(thisIterator)) {
-        yield* asIterable(RichIterator.from(inner));
-      }
-    }(),
-  );
+  return thisIterator.flatMap((inner) => inner);
 }
 
 export function inspect<T>(

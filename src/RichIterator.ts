@@ -1,4 +1,4 @@
-import type { Option, Result } from "@sck/optres";
+import { none, type Option, type Result, some } from "@sck/optres";
 import * as comparison from "./comparison.ts";
 import { asIterable, toIterator } from "./utilities.ts";
 import * as transform from "./transform.ts";
@@ -24,6 +24,16 @@ export class RichIterator<T, TReturn = unknown> {
       return this.source.next();
     }
     return this.source.next(args[0]);
+  }
+
+  public nextOption(): Option<T> {
+    const { done, value } = this.next();
+
+    if (done) {
+      return none();
+    }
+
+    return some(value);
   }
 
   public return(): IteratorResult<T, TReturn | undefined>;
