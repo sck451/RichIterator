@@ -1,5 +1,5 @@
 {
-  "name": "@sck/RichIterator",
+  "name": "@sck/richiterator",
   "exports": "./main.ts",
   "version": "0.1.1",
   "license": "MIT",
