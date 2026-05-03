@@ -1,14 +1,26 @@
 {
+  "name": "@sck/RichIterator",
+  "exports": "./main.ts",
+  "version": "0.1.0",
+  "license": "MIT",
   "tasks": {
     "dev": "deno run --watch main.ts"
   },
   "imports": {
-    "@sck/optres": "jsr:@sck/optres@^0.1.5",
+    "@sck/optres": "jsr:@sck/optres@^0.1.6",
     "@std/assert": "jsr:@std/assert@^1.0.19"
   },
   "lint": {
     "rules": {
       "tags": ["jsr"]
     }
+  },
+  "compilerOptions": {
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true
   }
 }

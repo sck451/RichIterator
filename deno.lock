@@ -1,13 +1,13 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@sck/optres@~0.1.5": "0.1.5",
+    "jsr:@sck/optres@~0.1.6": "0.1.6",
     "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/internal@^1.0.12": "1.0.13"
   },
   "jsr": {
-    "@sck/optres@0.1.5": {
-      "integrity": "d151b99e1589fbeb00c30ee228082108dc008901d27c0cf43cd3b6432b0c7101"
+    "@sck/optres@0.1.6": {
+      "integrity": "aa687a8247a8a1ce9298015e2a0913d58a5ab5beb5acf273d0bca3a3ab00570f"
     },
     "@std/assert@1.0.19": {
       "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
@@ -21,7 +21,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@sck/optres@~0.1.5",
+      "jsr:@sck/optres@~0.1.6",
       "jsr:@std/assert@^1.0.19"
     ]
   }
