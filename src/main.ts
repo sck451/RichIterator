@@ -1,1 +1,1 @@
-export { RichIterator } from "./RichIterator.ts";
+export { type ComparisonOrder, RichIterator } from "./RichIterator.ts";
