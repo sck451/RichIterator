@@ -8,11 +8,11 @@ export function find<T, S extends T>(
 ): Option<S>;
 export function find<T>(
   iterator: RichIterator<T>,
-  predicate: (value: T) => unknown,
+  predicate: (value: T) => boolean,
 ): Option<T>;
 export function find<T>(
   iterator: RichIterator<T>,
-  predicate: (value: T) => unknown,
+  predicate: (value: T) => boolean,
 ): Option<T> {
   for (const value of asIterable(iterator)) {
     if (predicate(value)) {
@@ -107,7 +107,7 @@ export function unzip<T, U>(
 
 export function someImpl<T>(
   iterator: RichIterator<T>,
-  predicate: (value: T) => unknown,
+  predicate: (value: T) => boolean,
 ): boolean {
   for (const value of asIterable(iterator)) {
     if (predicate(value)) {
@@ -119,7 +119,7 @@ export function someImpl<T>(
 
 export function every<T>(
   iterator: RichIterator<T>,
-  predicate: (value: T) => unknown,
+  predicate: (value: T) => boolean,
 ): boolean {
   for (const value of asIterable(iterator)) {
     if (!predicate(value)) {

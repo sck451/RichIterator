@@ -37,11 +37,11 @@ export function filter<T, S extends T>(
 ): RichIterator<S>;
 export function filter<T>(
   iterator: RichIterator<T>,
-  predicate: (value: T, index: number) => unknown,
+  predicate: (value: T, index: number) => boolean,
 ): RichIterator<T>;
 export function filter<T>(
   iterator: RichIterator<T>,
-  predicate: (value: T, index: number) => unknown,
+  predicate: (value: T, index: number) => boolean,
 ): RichIterator<T> {
   return new RichIterator(
     function* filterGenerator(): Generator<T, undefined, unknown> {

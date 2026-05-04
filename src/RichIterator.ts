@@ -101,10 +101,10 @@ export class RichIterator<T, TReturn = unknown> {
     predicate: (value: T) => value is S,
   ): RichIterator<S>;
   public filter(
-    predicate: (value: T) => unknown,
+    predicate: (value: T) => boolean,
   ): RichIterator<T>;
   public filter(
-    predicate: (value: T) => unknown,
+    predicate: (value: T) => boolean,
   ): RichIterator<T> {
     return transform.filter(this, predicate);
   }
@@ -287,11 +287,11 @@ export class RichIterator<T, TReturn = unknown> {
     return consume.count(this);
   }
 
-  public some(predicate: (value: T) => unknown): boolean {
+  public some(predicate: (value: T) => boolean): boolean {
     return search.someImpl(this, predicate);
   }
 
-  public every(predicate: (value: T) => unknown): boolean {
+  public every(predicate: (value: T) => boolean): boolean {
     return search.every(this, predicate);
   }
 
@@ -299,10 +299,10 @@ export class RichIterator<T, TReturn = unknown> {
     predicate: (value: T) => value is S,
   ): Option<S>;
   public find(
-    predicate: (value: T) => unknown,
+    predicate: (value: T) => boolean,
   ): Option<T>;
   public find(
-    predicate: (value: T) => unknown,
+    predicate: (value: T) => boolean,
   ): Option<T> {
     return search.find(this, predicate);
   }
