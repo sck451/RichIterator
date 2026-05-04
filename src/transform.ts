@@ -180,11 +180,9 @@ export function filterMap<T, U>(
 ): RichIterator<U> {
   return new RichIterator(
     function* filterMapGenerator(): Generator<U, undefined, unknown> {
-      for (const value of asIterable(iterator)) {
-        const result = mapper(value);
-
-        if (result.isSome()) {
-          yield result.unwrap();
+      for (const item of asIterable(iterator)) {
+        for (const value of mapper(item)) {
+          yield value;
         }
       }
     }(),
