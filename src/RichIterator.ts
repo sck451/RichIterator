@@ -739,9 +739,15 @@ export class RichIterator<T, TReturn = unknown> {
    * @typeparam V The type of the second element in each pair
    * @example
    * ```typescript
-   * const range = function* () { for (let i = 0; i < 5; i++) { yield i; }
-   * const letters = function* () { yield "a"; yield "b"; yield "c"; }
-   * const zipped = RichIterator.from(range).zip(letters);
+   * const range = function* () {
+   *   for (let i = 0; i < 5; i++) yield i;
+   * };
+   * const letters = function* () {
+   *   yield "a";
+   *   yield "b";
+   *   yield "c";
+   * };
+   * const zipped = RichIterator.from(range()).zip(letters());
    * const unzipped = zipped.unzip(); // [[0, 1, 2], ["a", "b", "c"]]
    * ```
    */
