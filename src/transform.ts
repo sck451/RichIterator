@@ -148,7 +148,7 @@ export function flatMap<T, U>(
   mapper: (
     value: T,
     index: number,
-  ) => Iterator<U, unknown, unknown> | Iterable<U>,
+  ) => Iterator<U, unknown, unknown> | Iterable<U> | RichIterator<U>,
 ): RichIterator<U> {
   return new RichIterator(
     function* flatMapGenerator(): Generator<U, undefined, unknown> {
@@ -162,7 +162,7 @@ export function flatMap<T, U>(
 
 export function chain<T>(
   iterator: RichIterator<T>,
-  other: Iterator<T> | Iterable<T>,
+  other: Iterator<T> | Iterable<T> | RichIterator<T>,
 ): RichIterator<T> {
   const otherIterator = RichIterator.from(other);
 
@@ -269,7 +269,7 @@ export function chunks<T>(
 
 export function zip<T, U>(
   thisIterator: RichIterator<T>,
-  other: Iterator<U> | Iterable<U>,
+  other: Iterator<U> | Iterable<U> | RichIterator<U>,
 ): RichIterator<[T, U]> {
   const otherIterator = toIterator(other);
 
@@ -294,7 +294,7 @@ export function zip<T, U>(
 
 export function zipWith<T, U, R>(
   thisIterator: RichIterator<T>,
-  other: Iterable<U> | Iterator<U>,
+  other: Iterable<U> | Iterator<U> | RichIterator<U>,
   zipper: (left: T, right: U) => R,
 ): RichIterator<R> {
   return zip(thisIterator, other).map(([left, right]) => zipper(left, right));

@@ -128,7 +128,7 @@ export class RichIterator<T, TReturn = unknown> {
   public flatMap<U>(
     mapper: (
       value: T,
-    ) => Iterator<U, unknown, unknown> | Iterable<U>,
+    ) => Iterator<U, unknown, unknown> | Iterable<U> | RichIterator<U>,
   ): RichIterator<U> {
     return transform.flatMap(this, mapper);
   }
@@ -156,7 +156,7 @@ export class RichIterator<T, TReturn = unknown> {
   }
 
   public chain(
-    other: Iterator<T> | Iterable<T>,
+    other: Iterator<T> | Iterable<T> | RichIterator<T>,
   ): RichIterator<T> {
     return transform.chain(this, other);
   }
@@ -165,12 +165,14 @@ export class RichIterator<T, TReturn = unknown> {
     return transform.filterMap(this, mapper);
   }
 
-  public zip<U>(other: Iterator<U> | Iterable<U>): RichIterator<[T, U]> {
+  public zip<U>(
+    other: Iterator<U> | Iterable<U> | RichIterator<U>,
+  ): RichIterator<[T, U]> {
     return transform.zip(this, other);
   }
 
   public zipWith<U, R>(
-    other: Iterable<U> | Iterator<U>,
+    other: Iterable<U> | Iterator<U> | RichIterator<U>,
     zipper: (left: T, right: U) => R,
   ): RichIterator<R> {
     return transform.zipWith(this, other, zipper);
@@ -184,51 +186,51 @@ export class RichIterator<T, TReturn = unknown> {
     return transform.intersperseWith(this, separatorFn);
   }
 
-  public eq(other: Iterator<T> | Iterable<T>): boolean {
+  public eq(other: Iterator<T> | Iterable<T> | RichIterator<T>): boolean {
     return this.eqBy(other, Object.is);
   }
 
   public eqBy<U>(
-    other: Iterator<U> | Iterable<U>,
+    other: Iterator<U> | Iterable<U> | RichIterator<U>,
     comparisonFn: (left: T, right: U) => boolean,
   ): boolean {
     return comparison.eqBy(this, other, comparisonFn);
   }
 
-  public ne(other: Iterator<T> | Iterable<T>): boolean {
+  public ne(other: Iterator<T> | Iterable<T> | RichIterator<T>): boolean {
     return !this.eq(other);
   }
 
   public lt(
-    other: Iterator<T> | Iterable<T>,
+    other: Iterator<T> | Iterable<T> | RichIterator<T>,
     comparator?: comparison.Comparator<T>,
   ): boolean {
     return comparison.lt(this, other, comparator);
   }
 
   public le(
-    other: Iterator<T> | Iterable<T>,
+    other: Iterator<T> | Iterable<T> | RichIterator<T>,
     comparator?: comparison.Comparator<T>,
   ): boolean {
     return comparison.le(this, other, comparator);
   }
 
   public gt(
-    other: Iterator<T> | Iterable<T>,
+    other: Iterator<T> | Iterable<T> | RichIterator<T>,
     comparator?: comparison.Comparator<T>,
   ): boolean {
     return comparison.gt(this, other, comparator);
   }
 
   public ge(
-    other: Iterator<T> | Iterable<T>,
+    other: Iterator<T> | Iterable<T> | RichIterator<T>,
     comparator?: comparison.Comparator<T>,
   ): boolean {
     return comparison.ge(this, other, comparator);
   }
 
   public cmp(
-    other: Iterator<T> | Iterable<T>,
+    other: Iterator<T> | Iterable<T> | RichIterator<T>,
     comparator?: comparison.Comparator<T>,
   ): comparison.Order {
     return comparison.cmp(this, other, comparator);

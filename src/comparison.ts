@@ -71,7 +71,7 @@ export function eqBy<T, U>(
 
 export function lt<T>(
   thisIterator: RichIterator<T>,
-  other: Iterator<T> | Iterable<T>,
+  other: Iterator<T> | Iterable<T> | RichIterator<T>,
   comparator?: Comparator<T>,
 ): boolean {
   return cmp(thisIterator, other, comparator) === "less";
@@ -79,7 +79,7 @@ export function lt<T>(
 
 export function le<T>(
   thisIterator: RichIterator<T>,
-  other: Iterator<T> | Iterable<T>,
+  other: Iterator<T> | Iterable<T> | RichIterator<T>,
   comparator?: Comparator<T>,
 ): boolean {
   return cmp(thisIterator, other, comparator) !== "greater";
@@ -87,7 +87,7 @@ export function le<T>(
 
 export function gt<T>(
   thisIterator: RichIterator<T>,
-  other: Iterator<T> | Iterable<T>,
+  other: Iterator<T> | Iterable<T> | RichIterator<T>,
   comparator?: Comparator<T>,
 ): boolean {
   return cmp(thisIterator, other, comparator) === "greater";
@@ -95,7 +95,7 @@ export function gt<T>(
 
 export function ge<T>(
   thisIterator: RichIterator<T>,
-  other: Iterator<T> | Iterable<T>,
+  other: Iterator<T> | Iterable<T> | RichIterator<T>,
   comparator?: Comparator<T>,
 ): boolean {
   return cmp(thisIterator, other, comparator) !== "less";
