@@ -1,4 +1,4 @@
-import { RichIterator } from "../main.ts";
+import { RichIterator } from "@sck/richiterator";
 import { assert, assertEquals, assertThrows } from "@std/assert";
 
 Deno.test("core: next", () => {

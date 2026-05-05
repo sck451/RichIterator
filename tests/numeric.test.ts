@@ -1,5 +1,5 @@
 import { assert, assertEquals } from "@std/assert";
-import { RichIterator } from "../src/RichIterator.ts";
+import { RichIterator } from "@sck/richiterator";
 
 Deno.test("numeric: sum success", () => {
   const result = RichIterator.from([1, "2", 3]).sum();
