@@ -113,12 +113,11 @@ Deno.test("transform: inspect preserves values", () => {
 Deno.test("transform: chunks returns full chunks and remainder as return value", () => {
   const it = RichIterator.from([1, 2, 3, 4, 5]).chunks(2);
 
-  assertEquals(it.next(), { done: false, value: [1, 2] });
-  assertEquals(it.next(), { done: false, value: [3, 4] });
+  assertEquals(it.next(), { done: false, value: ok([1, 2]) });
+  assertEquals(it.next(), { done: false, value: ok([3, 4]) });
 
   const final = it.next();
-  assertEquals(final.done, true);
-  assertEquals(final.value, [5]);
+  assertEquals(final.value, err([5]));
 
   assertThrows(() => RichIterator.from([1, 2, 3]).chunks(0));
   assertThrows(() => RichIterator.from([1, 2, 3]).chunks(-1));

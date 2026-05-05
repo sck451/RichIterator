@@ -1,5 +1,5 @@
 import { RichIterator } from "./RichIterator.ts";
-import type { Option, Result } from "@sck/optres";
+import { err, ok, type Option, type Result } from "@sck/optres";
 import { asIterable, toIterator } from "./utilities.ts";
 
 export function map<T, U>(
@@ -240,7 +240,7 @@ export function mapWhile<T, U>(
 export function chunks<T>(
   iterator: RichIterator<T>,
   size: number,
-): RichIterator<T[], T[]> {
+): RichIterator<Result<T[], T[]>> {
   if (!Number.isInteger(size) || size <= 0) {
     throw new RangeError(`size must be greater than 0, given ${size}.`);
   }
@@ -248,19 +248,19 @@ export function chunks<T>(
   const iterable = asIterable(iterator);
 
   return new RichIterator(
-    function* chunksGenerator(): Generator<T[], T[], unknown> {
+    function* chunksGenerator() {
       let cache: T[] = [];
 
       for (const value of iterable) {
         cache.push(value);
 
         if (cache.length === size) {
-          yield cache;
+          yield ok(cache);
           cache = [];
         }
       }
 
-      return cache;
+      yield err(cache);
     }(),
   );
 }

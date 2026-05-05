@@ -326,7 +326,7 @@ export class RichIterator<T, TReturn = unknown> {
    * @returns A `Result`: `Ok` means the chunk is complete, `Err` means the iterator is exhausted before
    * completing the chunk.
    */
-  public chunks(size: number): RichIterator<T[], T[]> {
+  public chunks(size: number): RichIterator<Result<T[], T[]>> {
     return transform.chunks(this, size);
   }
 
