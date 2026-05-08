@@ -260,7 +260,9 @@ export function chunks<T>(
         }
       }
 
-      yield err(cache);
+      if (cache.length > 0) {
+        yield err(cache);
+      }
     }(),
   );
 }

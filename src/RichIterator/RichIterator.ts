@@ -320,8 +320,8 @@ export class RichIterator<T, TReturn = unknown> {
   /**
    * Change the iterator so it returns items in chunks of `size`, rather than one by one.
    *
-   * While filled chunks are returned, these are `Ok`. When the final chunk is reached (which will contain
-   * 0 or less than `size` items), this is `Err`.
+   * While filled chunks are returned, these are `Ok`. When the final chunk is reached, if there are any
+   * items that haven't been returned in a chunk, these are passed as the `Err` value.
    * @param size The size of the chunks to return
    * @returns A `Result`: `Ok` means the chunk is complete, `Err` means the iterator is exhausted before
    * completing the chunk.
