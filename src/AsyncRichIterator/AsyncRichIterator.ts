@@ -9,9 +9,9 @@ import {
 } from "./utilities.ts";
 import { toNumber } from "../RichIterator/numeric.ts";
 
-type MaybePromise<T> = Promise<T> | T;
+export type MaybePromise<T> = Promise<T> | T;
 
-type AsyncComparator<T> = (a: T, b: T) => MaybePromise<number>;
+export type AsyncComparator<T> = (a: T, b: T) => MaybePromise<number>;
 
 export class AsyncRichIterator<T> {
   #iterator: AsyncIterator<T>;
@@ -299,7 +299,7 @@ export class AsyncRichIterator<T> {
           cache = [];
         }
       }
-      console.log(cache.length);
+
       if (cache.length > 0) {
         yield err(cache);
       }
