@@ -119,6 +119,8 @@ Deno.test("transform: chunks returns full chunks and remainder as return value",
   const final = it.next();
   assertEquals(final.value, err([5]));
 
+  assertEquals(it.next(), { done: true, value: undefined });
+
   assertThrows(() => RichIterator.from([1, 2, 3]).chunks(0));
   assertThrows(() => RichIterator.from([1, 2, 3]).chunks(-1));
   assertThrows(() => RichIterator.from([1, 2, 3]).chunks(0.5));
