@@ -12,7 +12,7 @@
   },
   "lint": {
     "rules": {
-      "tags": ["jsr"]
+      "tags": ["jsr", "recommended"]
     }
   },
   "compilerOptions": {
