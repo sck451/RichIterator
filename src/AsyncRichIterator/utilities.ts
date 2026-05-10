@@ -1,5 +1,13 @@
 import { AsyncRichIterator, type RichIterator } from "@sck/richiterator";
 
+/**
+ * A type that means a value may either be `T` either synchronously or within a promise.
+ */
+export type MaybePromise<T> = Promise<T> | T;
+
+/**
+ * A type that describes any object that can be accepted by {@linkcode AsyncRichIterator}
+ */
 export type IteratorKind<T> =
   | Iterator<T>
   | Iterable<T>
@@ -97,3 +105,9 @@ export function bareIteratorToAsyncIterable<T, TReturn = unknown>(
     return result.value;
   }());
 }
+
+/**
+ * A comparator function that compares two values and may do so either synchronously or
+ * asynchronously.
+ */
+export type AsyncComparator<T> = (a: T, b: T) => MaybePromise<number>;

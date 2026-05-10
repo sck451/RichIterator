@@ -1,26 +1,17 @@
 import { none, type Option, type Result, some } from "@sck/optres";
 import * as comparison from "./comparison.ts";
-import { asIterable, toIterator } from "./utilities.ts";
+import {
+  asIterable,
+  type Comparator,
+  type ComparisonOrder,
+  toIterator,
+} from "./utilities.ts";
 import * as transform from "./transform.ts";
 import * as consume from "./consume.ts";
 import * as search from "./search.ts";
 import * as numeric from "./numeric.ts";
 
-/**
- * The type returned by {@linkcode RichIterator.prototype.cmp}.
- *
- * The possible values are `"equal"`, `"less"`, and `"greater"`
- */
-export type ComparisonOrder = comparison.Order;
-
-/**
- * A comparison function. This takes two values and returns a number. If the number is `0`, the values
- * are considered equal. If the number is less than `0`, the first value is less than the second. If the
- * number is greater than `0`, the first value is greater than the second.
- *
- * @typeparam T The type of the values to compare
- */
-export type Comparator<T> = comparison.Comparator<T>;
+export type { Comparator, ComparisonOrder };
 
 /**
  * `RichIterator` is a wrapper class around Javascript/Typescript iterators and iterables
@@ -84,8 +75,6 @@ export class RichIterator<T, TReturn = unknown> {
   /**
    * End the iterator and call any destructor methods.
    */
-  public return(): IteratorResult<T, TReturn | undefined>;
-  public return(value: TReturn): IteratorResult<T, TReturn>;
   public return(value?: TReturn): IteratorResult<T, TReturn | undefined> {
     if (typeof this.source.return === "function") {
       return this.source.return(value);
@@ -208,6 +197,12 @@ export class RichIterator<T, TReturn = unknown> {
   public filter<S extends T>(
     predicate: (value: T) => value is S,
   ): RichIterator<S>;
+  /**
+   * Lazily apply a function to each item in the iterator. If the result is `true`, the item is
+   * yielded. If it is `false`, the value is dropped.
+   * @param predicate A function to test if the value should be kept
+   * @returns A new RichIterator after the filter is applied
+   */
   public filter(
     predicate: (value: T) => boolean,
   ): RichIterator<T>;
@@ -669,6 +664,12 @@ export class RichIterator<T, TReturn = unknown> {
   public find<S extends T>(
     predicate: (value: T) => value is S,
   ): Option<S>;
+  /**
+   * Search the iterator for the first value that passes a predicate and return it as `Some`. If no item is found, returns `None`.
+   * Consumes the iterator.
+   * @param predicate A function that returns `true` if the item is found, otherwise `false`.
+   * @returns `Option<T>` `Some` if the item is found, otherwise `None`
+   */
   public find(
     predicate: (value: T) => boolean,
   ): Option<T>;
@@ -726,6 +727,12 @@ export class RichIterator<T, TReturn = unknown> {
   public partition<S extends T>(
     predicate: (value: T) => value is S,
   ): [S[], Exclude<T, S>[]];
+  /**
+   * Consume the iterator and divide its contents into two based on a predicate.
+   * @param predicate The test function to run on each item in the iterator
+   * @returns A tuple where the first element is an array of items that pass the predicate and the second element is an array
+   * of items that fail the predicate.
+   */
   public partition(predicate: (value: T) => boolean): [T[], T[]];
   public partition(predicate: (value: T) => boolean): [T[], T[]] {
     return search.partition(this, predicate);

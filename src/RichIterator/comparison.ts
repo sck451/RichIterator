@@ -1,9 +1,9 @@
 import type { Option } from "@sck/optres";
-import { RichIterator } from "./RichIterator.ts";
-
-export type Order = "less" | "equal" | "greater";
-
-export type Comparator<T> = (a: T, b: T) => number;
+import {
+  type Comparator,
+  type ComparisonOrder,
+  RichIterator,
+} from "@sck/richiterator";
 
 export function getDefaultComparator<T>(): Comparator<T> {
   return (a: T, b: T) => {
@@ -17,7 +17,7 @@ export function cmp<T>(
   thisIterator: RichIterator<T>,
   comparisonIterator: RichIterator<T> | Iterator<T> | Iterable<T>,
   comparator?: Comparator<T>,
-): Order {
+): ComparisonOrder {
   const otherIterator = RichIterator.from(comparisonIterator);
 
   const comparisonFn = comparator ?? getDefaultComparator();
